@@ -1,0 +1,48 @@
+\documentclass[a4paper]{ltjsarticle}
+\usepackage[a4paper, margin=0in]{geometry}
+\usepackage{tikz}
+\usepackage{luacode}
+%\setmainfont{M PLUS 1}
+%\setsansfont{M PLUS 1}
+%\setmonofont{M PLUS 1 Code}
+%\setmainjfont{M PLUS 1}
+%\setsansjfont{M PLUS 1}
+%\setmonojfont{M PLUS 1 Code}
+\renewcommand{\kanjifamilydefault}{\gtdefault}
+\renewcommand{\familydefault}{\sfdefault}
+
+
+\begin{document}
+
+\begin{luacode}
+    function putCard (id,pass, num)
+        tex.sprint("\\noindent")
+        tex.sprint("\\begin{tikzpicture}")
+        tex.sprint("\\node[text width=0.32\\linewidth, text height=30ex,draw=black] (WAKU) {};")
+        tex.sprint("\\node[font=\\LARGE,anchor=center,align=center] at (WAKU.center) {WiFi 接続情報\\\\SSID: ssid \\\\ ID: ".. id .. "\\\\PW: " .. pass .. "};")
+        tex.sprint("\\node[anchor=north west] at ([shift={(1mm,-1mm)}]WAKU.north west) {" .. num .. "};")
+        tex.sprint("\\end{tikzpicture}")
+    end
+
+    local l = 0
+    for line in io.lines("passwords.csv") do 
+
+        if math.fmod(l, 3) == 0 then
+            tex.sprint("\\\\")
+        end
+
+        local parts = {}
+        for w in string.gmatch(line, "%S+") do table.insert( parts, w) end
+        id = parts[1]
+        pass = parts[2]
+        putCard( id, pass, l)
+
+        l = l+1
+    end
+    
+
+\end{luacode}
+
+
+\end{document}
+
